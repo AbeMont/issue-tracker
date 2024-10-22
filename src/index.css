@@ -83,3 +83,7 @@ button.btn {
 .bi {
   margin-right: 5px;
 }
+
+.react-date-picker__calendar--open {
+  //inset: auto !important;
+}
