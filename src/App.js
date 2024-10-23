@@ -45,7 +45,10 @@ function App() {
 
   // DELETE
   function handleDeleteIssues(id) {
-    setIssues(issues => issues.filter(issue => issue.id !== id));
+    const confirmed = window.confirm("Are you sure you want to delete this issue?");
+    if(confirmed){
+      setIssues(issues => issues.filter(issue => issue.id !== id));
+    }
   }
 
   // UPDATE
