@@ -17,7 +17,11 @@ export default function Issue({issueObj, deleteIssueHandler, openIssueHandler, u
             <p className="mb-3"><i className="bi bi-alarm"></i><b>Due Date: </b> {issueObj.dueDate} </p>
 
 
-            <button className="btn btn-success" onClick={()=>openIssueHandler(issueObj.id)}>Close Issue</button>
+            <button 
+                className={`btn ${issueObj.open ? 'btn-success' : 'btn-primary'}`} 
+                onClick={()=>openIssueHandler(issueObj.id)}>
+                {issueObj.open ? 'Close Issue' : 'Reopen Issue'}
+            </button>
 
             <button className="btn btn-warning" data-bs-toggle="modal" data-bs-target={`#editModal-${issueObj.id}`}>Edit Issue</button>
 

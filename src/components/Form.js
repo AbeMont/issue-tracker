@@ -6,11 +6,10 @@ import 'react-calendar/dist/Calendar.css';
 export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, updateIssue }){
 
     const [description, setDescription] = useState(issueObj ? issueObj.description : "");
-    const [severity, setSeverity] = useState(issueObj ? issueObj.severity : "Low");
+    const [severity, setSeverity] = useState(issueObj ? issueObj.severity : "");
     const [assigned, setAssigned] = useState(issueObj ? issueObj.assigned : "");
-    // const [dueDate, setDueDate] = useState(issueObj ? issueObj.dueDate : "");
     const [value, onChange] = useState(issueObj ? issueObj.dueDate : new Date());
-    //console.log(new Date(value).toDateString())
+    // const [dueDate, setDueDate] = useState(issueObj ? issueObj.dueDate : "");
     // const [formattedDateValue, setFormattedDateValue] = useState(new Date(value).toDateString());
 
     const today = new Date();
@@ -64,6 +63,8 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
 
         e.preventDefault();
 
+        if(description === "" || severity === "" || assigned === "") return;
+
         const newIssue = {
             id: crypto.randomUUID(),
             description: description,
@@ -101,7 +102,8 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
                     id="issueDescInput" 
                     placeholder="What is the description of your issue?" 
                     value={description}
-                    onChange={(e)=>{descriptionHandler(e)}}/>  
+                    onChange={(e)=>{descriptionHandler(e)}}/>
+                    {description === "" && <span><p className="text-danger m-0">*Description is required</p></span>} 
             </div>
 
             <div className="form-group mb-2">
@@ -111,10 +113,12 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
                     className="form-control form-select" 
                     value={severity}
                     onChange={(e)=>severityHandler(e)}>
+                        <option value="">Urgency of Task</option>
                         <option value="Low">Low</option>
                         <option value="Medium">Medium</option>
                         <option value="High">High</option>
                 </select>
+                {severity === "" && <span><p className="text-danger m-0">*Select Level of Urgency</p></span>}
             </div>
 
             <div className="form-group mb-2">
@@ -124,11 +128,12 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
                     id="assignInput" 
                     placeholder="Enter Name"
                     value={assigned}
-                    onChange={(e)=>handleAssign(e)}/>  
+                    onChange={(e)=>handleAssign(e)}/>
+                    {assigned === "" && <span><p className="text-danger m-0">*Individual is required</p></span>}  
             </div>
 
             <div className="form-group">
-                <label htmlFor="dueDate">Due date:</label>
+                <label htmlFor="dueDate">Due date: </label>
                 {/* <input type="date" 
                     className="form-control date-picker" 
                     id="dueDate"
@@ -138,10 +143,11 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
                     onChange={(e)=>handleDateValue(e)} /> */}
 
                     <DatePicker 
-                    className="react-date-picker"
+                    className="react-date-picker mt-2"
                     minDate={new Date()} 
                     onChange={onChange} 
                     value={value}/>
+                    
             </div>
 
             
