@@ -2,7 +2,7 @@ import { useState } from "react";
 import DateTime from './components/DateTime';
 import Form from './components/Form';
 import IssuesList from './components/IssuesList';
-// import Sort from './components/Sort';
+import Sort from './components/Sort';
 
 const issuseArray = [
   {
@@ -37,10 +37,13 @@ const issuseArray = [
 function App() {
 
   const [issues, setIssues] = useState(issuseArray);
+  const [sortedIssues, setSortedIssues] = useState([...issues]);
+  const [userSelected, setUserSelected] = useState("");
 
   // CREATE
   function handleAddIssues(issue) {
     setIssues(issues => [...issues, issue]);
+    setSortedIssues(sortedIssues => [...sortedIssues, issue]);
   }
 
   // DELETE
@@ -48,6 +51,7 @@ function App() {
     const confirmed = window.confirm("Are you sure you want to delete this issue?");
     if(confirmed){
       setIssues(issues => issues.filter(issue => issue.id !== id));
+      setSortedIssues(sortedIssues => issues.filter(issue => issue.id !== id));
     }
   }
 
@@ -56,11 +60,17 @@ function App() {
     setIssues(issues => issues.map(
       issue => issue.id === id ? {...issue, open: !issue.open} : issue
     ));
+    setSortedIssues(sortedIssues => sortedIssues.map(
+      issue => issue.id === id ? {...issue, open: !issue.open} : issue
+    ))
   }
 
   function handleUpdateIssues(updatedIssue) {
-    console.log("Update user: ", updatedIssue);
     setIssues(issues => issues.map(
+      issue => issue.id === updatedIssue.id ? {...issue, ...updatedIssue} : issue
+    ));
+
+    setSortedIssues(sortedIssues => sortedIssues.map(
       issue => issue.id === updatedIssue.id ? {...issue, ...updatedIssue} : issue
     ));
   }
@@ -68,22 +78,43 @@ function App() {
    // Lets create a sorting feature by opened, closed, severity , and assigned to.
    // Needs form validation
 
+   function handleShowOnlyByName(assigned, issues){
+      console.log("Show User: ", assigned);
+
+      if(assigned === 'all'){
+        setSortedIssues([...issues]);
+        setUserSelected("");
+        return;
+      }
+
+      setSortedIssues(sortedIssues => [...issues].filter(issue => issue.assigned === assigned));
+      setUserSelected(assigned);
+
+   }
+
   return (
     <div className="container">
 
       <h1 className="my-3">Issue Tracker App</h1>
-        <div className='issue-tracker-comtainer jumbotron p-4 mb-5'>
+
+        <div className='issue-tracker-comtainer jumbotron p-4 mb-3'>
           <DateTime/>
           <h3>
             Add New Issue
           </h3>
           <Form 
             onHandleAddIssues={handleAddIssues}
+            onHandleSortedIssues={setSortedIssues}
+            issues={sortedIssues}
           />
         </div>
-        {/* <Sort issues={issues} showOnlyByName={handleShowOnlyByName}/> */}
+
+        <Sort 
+          issues={issues}
+          userSelected={userSelected}
+          showOnlyByName={handleShowOnlyByName}/>
         <IssuesList 
-          issues={issues} 
+          issues={sortedIssues}  
           onHandleDeleteIssues={handleDeleteIssues}
           onHandleOpenIssues={handleOpenIssues}
           onHandleUpdateIssue={handleUpdateIssues}/>

@@ -9,8 +9,6 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
     const [severity, setSeverity] = useState(issueObj ? issueObj.severity : "");
     const [assigned, setAssigned] = useState(issueObj ? issueObj.assigned : "");
     const [value, onChange] = useState(issueObj ? issueObj.dueDate : new Date());
-    // const [dueDate, setDueDate] = useState(issueObj ? issueObj.dueDate : "");
-    // const [formattedDateValue, setFormattedDateValue] = useState(new Date(value).toDateString());
 
     const today = new Date();
     today.toDateString();
@@ -18,46 +16,17 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
     function descriptionHandler(e){
         const value = e.target.value;
         setDescription(value);
-        console.log(value);
     }
 
     function severityHandler(e){
         const value = e.target.value;
         setSeverity(value);
-        console.log(value);
     }
 
     function handleAssign(e){
         const value = e.target.value;
         setAssigned(value);
-        console.log(value);
     }
-
-    // function handleDateValue(e){
-
-    //    // const dueDateValue = new Date(e.target.value);
-    //     // const day = dueDateValue.getUTCDate();
-    //     // const dayOfWeek = dueDateValue.getUTCDay();
-    //     // const month = dueDateValue.getUTCMonth(); // Return Value is 0 indexed
-    //     // const year = dueDateValue.getUTCFullYear();
-    //     // const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
-    //     // console.log("Week Day: ", weekDays[dayOfWeek] , "Month: ", month, "Day: ", day, "Year: ", year);
-
-    //     console.log(e.target.value);
-
-    //     // console.log(dueDateValue.toDateString());
-    //     // console.log("Due Date ISO: ", dueDateValue.toISOString().slice(0,10));
-    //     // console.log("Get day: ", dueDateValue);
-
-    //     // Update our Date Picker value to the correct format yyyy-mm-dd
-    //     setDueDate(new Date(value).toDateString());
-
-    //     // Create our new date Prop as Thu Oct 24 2024
-    //     //setFormattedDateValue(e.target.value);
-
-
-    // }
 
     function handleAddSubmit(e){
 
@@ -76,7 +45,7 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
         }
 
         onHandleAddIssues(newIssue);
-        console.log(onHandleAddIssues)
+        //onHandleSortedIssues([...issues, newIssue]);
 
     }
 
@@ -90,6 +59,7 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
             severity: severity 
         }
         updateIssue(updatedIssue);
+         //updateSortedIssues([...issues, updatedIssue]);
     }
 
     return (
@@ -134,20 +104,11 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
 
             <div className="form-group">
                 <label htmlFor="dueDate">Due date: </label>
-                {/* <input type="date" 
-                    className="form-control date-picker" 
-                    id="dueDate"
-                    min={today.toLocaleDateString('en-ca')}
-                    name="Due Date" 
-                    value={dueDate}
-                    onChange={(e)=>handleDateValue(e)} /> */}
-
-                    <DatePicker 
+                <DatePicker 
                     className="react-date-picker mt-2"
                     minDate={new Date()} 
                     onChange={onChange} 
                     value={value}/>
-                    
             </div>
 
             
