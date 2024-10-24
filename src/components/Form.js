@@ -9,6 +9,7 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
     const [severity, setSeverity] = useState(issueObj ? issueObj.severity : "");
     const [assigned, setAssigned] = useState(issueObj ? issueObj.assigned : "");
     const [value, onChange] = useState(issueObj ? issueObj.dueDate : new Date());
+    const buttonDisabled = (description === "" || severity === "" || assigned === "");
 
     const today = new Date();
     today.toDateString();
@@ -123,7 +124,7 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
                     <button type="submit" className="btn btn-primary" data-bs-dismiss="modal">Save changes</button>
                 </div> 
                 : 
-                <button type="submit" className="btn btn-primary mt-3">Create Issue</button>
+                <button type="submit" className="btn btn-primary mt-3" disabled={buttonDisabled}>Create Issue</button>
             }
 
         </form>
