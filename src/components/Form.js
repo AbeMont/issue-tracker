@@ -45,7 +45,11 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
         }
 
         onHandleAddIssues(newIssue);
-        //onHandleSortedIssues([...issues, newIssue]);
+       
+        // Clear the form after Submitting
+        setDescription("");
+        setSeverity("");
+        setAssigned("");
 
     }
 
@@ -59,7 +63,7 @@ export default function Form ({ onHandleAddIssues, issueObj, isUpdateModal, upda
             severity: severity 
         }
         updateIssue(updatedIssue);
-         //updateSortedIssues([...issues, updatedIssue]);
+
     }
 
     return (
