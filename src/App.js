@@ -44,9 +44,8 @@ function App() {
   function handleAddIssues(issue) {
     setIssues(issues => [...issues, issue]);
 
-    // If Abe is selected return the current sortedIssues array and add the new issue
     if(userSelected !== "") {
-     // setUserSelected("");
+
      if(userSelected !== issue.assigned){
       setUserSelected("");
       setSortedIssues(sortedIssues => [...issues]);
@@ -62,9 +61,17 @@ function App() {
   // DELETE
   function handleDeleteIssues(id) {
     const confirmed = window.confirm("Are you sure you want to delete this issue?");
+
     if(confirmed){
+
       setIssues(issues => issues.filter(issue => issue.id !== id));
-      setSortedIssues(sortedIssues => issues.filter(issue => issue.id !== id));
+
+      if(userSelected !== "") {
+        setSortedIssues(sortedIssues => sortedIssues.filter(sortedIssue => sortedIssue.id !== id ))
+      } else {
+        setSortedIssues(sortedIssues => issues.filter(issue => issue.id !== id));
+      }
+
     }
   }
 
@@ -83,9 +90,27 @@ function App() {
       issue => issue.id === updatedIssue.id ? {...issue, ...updatedIssue} : issue
     ));
 
-    setSortedIssues(sortedIssues => sortedIssues.map(
-      issue => issue.id === updatedIssue.id ? {...issue, ...updatedIssue} : issue
-    ));
+    if(userSelected !== ""){
+
+      if(userSelected !== updatedIssue.assigned){
+        setUserSelected("");
+        setSortedIssues(sortedIssues => issues.map(
+          issue => issue.id === updatedIssue.id ? {...issue, ...updatedIssue} : issue
+        ))
+      }
+
+      if(userSelected === updatedIssue.assigned){
+        setSortedIssues(sortedIssues => sortedIssues.map(
+          sortedIssue => sortedIssue.id === updatedIssue.id ? {...sortedIssue, ...updatedIssue} : sortedIssue
+        ))
+      }
+
+    } else {
+
+        setSortedIssues(sortedIssues => sortedIssues.map(
+          sortedIssue => sortedIssue.id === updatedIssue.id ? {...sortedIssue, ...updatedIssue} : sortedIssue
+        ));
+    }
   }
 
    // Lets create a sorting feature by opened, closed, severity , and assigned to.
