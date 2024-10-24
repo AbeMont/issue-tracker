@@ -67,7 +67,14 @@ function App() {
       setIssues(issues => issues.filter(issue => issue.id !== id));
 
       if(userSelected !== "") {
-        setSortedIssues(sortedIssues => sortedIssues.filter(sortedIssue => sortedIssue.id !== id ))
+
+        if(sortedIssues.length === 1) {
+          console.log("Fix here");
+          setSortedIssues(sortedIssues => issues.filter(issue => issue.id !== id ))
+        }
+
+        setSortedIssues(sortedIssues => sortedIssues.filter(sortedIssue => sortedIssue.id !== id ));
+
       } else {
         setSortedIssues(sortedIssues => issues.filter(issue => issue.id !== id));
       }
