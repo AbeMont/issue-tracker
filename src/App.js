@@ -43,7 +43,20 @@ function App() {
   // CREATE
   function handleAddIssues(issue) {
     setIssues(issues => [...issues, issue]);
-    setSortedIssues(sortedIssues => [...sortedIssues, issue]);
+
+    // If Abe is selected return the current sortedIssues array and add the new issue
+    if(userSelected !== "") {
+     // setUserSelected("");
+     if(userSelected !== issue.assigned){
+      setUserSelected("");
+      setSortedIssues(sortedIssues => [...issues]);
+     }
+
+      setSortedIssues(sortedIssues => [...sortedIssues, issue]);
+    } else {
+      setSortedIssues(sortedIssues => [...sortedIssues, issue]);
+    }
+
   }
 
   // DELETE
