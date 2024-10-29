@@ -39,26 +39,40 @@ function App() {
   const [issues, setIssues] = useState(issuseArray);
   const [sortedIssues, setSortedIssues] = useState([...issues]);
   const [userSelected, setUserSelected] = useState("");
+  const [status, setStatus] = useState("show all");
 
+  console.log("userSelected: ",userSelected);
+
+  ////////////
   // CREATE
+  ///////////
   function handleAddIssues(issue) {
+    // Add new issue to the original top level array
     setIssues(issues => [...issues, issue]);
 
-    if(userSelected !== "") {
+    // If user IS selected, meaning userSelected is NOT empty
+    if(userSelected !== "") { // userSelected is a string as "Cindy" or "Sunny"
 
+      // Check if userName is not the same person from the issue parameter
      if(userSelected !== issue.assigned){
-      setUserSelected("");
-      setSortedIssues(sortedIssues => [...issues]);
+      setUserSelected(""); // We set the the "Sort by name" <select> back to empty
+      setSortedIssues(sortedIssues => [...issues, issue]); // Then copy the original array into the sorted issues array to display ALL the issues.
+     }
+     // if the UserSelected is the person from issue parameter,   
+     else if(userSelected === issue.assigned){
+      // We only need the current rendering from sortedIssues, NOT ALL THE ISSUES , and add the new issue for the current selected user
+      setSortedIssues(sortedIssues => [...sortedIssues, issue]);
      }
 
-      setSortedIssues(sortedIssues => [...sortedIssues, issue]);
-    } else {
+    } else if(userSelected === "") {
       setSortedIssues(sortedIssues => [...sortedIssues, issue]);
     }
 
   }
 
+  ////////////
   // DELETE
+  ///////////
   function handleDeleteIssues(id) {
     const confirmed = window.confirm("Are you sure you want to delete this issue?");
 
@@ -67,31 +81,35 @@ function App() {
       setIssues(issues => issues.filter(issue => issue.id !== id));
 
       if(userSelected !== "") {
-
         if(sortedIssues.length === 1) {
-          console.log("Fix here");
-          setSortedIssues(sortedIssues => issues.filter(issue => issue.id !== id ))
+          setSortedIssues(sortedIssues => issues.filter(issue => issue.id !== id ));
+          setUserSelected("");
+        } else {
+          setSortedIssues(sortedIssues => sortedIssues.filter(sortedIssue => sortedIssue.id !== id ));
         }
-
-        setSortedIssues(sortedIssues => sortedIssues.filter(sortedIssue => sortedIssue.id !== id ));
-
-      } else {
-        setSortedIssues(sortedIssues => issues.filter(issue => issue.id !== id));
+  
+      } else if (userSelected === "") {
+        setSortedIssues(sortedIssues => sortedIssues.filter(sortedIssue => sortedIssue.id !== id));
       }
 
     }
   }
 
+  ////////////
   // UPDATE
+  ///////////
+
+  // Update open/closed issue
   function handleOpenIssues(id) {
     setIssues(issues => issues.map(
       issue => issue.id === id ? {...issue, open: !issue.open} : issue
     ));
     setSortedIssues(sortedIssues => sortedIssues.map(
-      issue => issue.id === id ? {...issue, open: !issue.open} : issue
+      sortedIssue => sortedIssue.id === id ? {...sortedIssue, open: !sortedIssue.open} : sortedIssue
     ))
   }
 
+  // Update Description, severity, Assigned, and due date
   function handleUpdateIssues(updatedIssue) {
     setIssues(issues => issues.map(
       issue => issue.id === updatedIssue.id ? {...issue, ...updatedIssue} : issue
@@ -120,22 +138,65 @@ function App() {
     }
   }
 
-   // Lets create a sorting feature by opened, closed, severity , and assigned to.
-   // Needs form validation
+  /////////////
+  // Sorting
+  ////////////
 
-   function handleShowOnlyByName(assigned, issues){
-      console.log("Show User: ", assigned);
+  // Sort by name
+  function handleShowOnlyByName(assigned, issues){
 
-      if(assigned === 'all'){
-        setSortedIssues([...issues]);
-        setUserSelected("");
-        return;
+    if(assigned === 'all'){
+      setSortedIssues([...issues]);
+      setUserSelected("");
+      return;
+    }
+
+    setSortedIssues(sortedIssues => [...issues].filter(issue => issue.assigned === assigned));
+    setUserSelected(assigned);
+
+  }
+
+  // Sort By Completed
+  function handleShowByStatus(val){
+    console.log("Show by Completed status: ", val);
+
+    if(val === "open"){
+
+      if(userSelected === "") {
+        setSortedIssues(sortedIssues => issues.filter(issue => issue.open));
+      } else if(userSelected !== ""){
+        setSortedIssues(sortedIssues => issues.filter(
+          issue => issue.assigned === userSelected && issue.open
+        ))
       }
 
-      setSortedIssues(sortedIssues => [...issues].filter(issue => issue.assigned === assigned));
-      setUserSelected(assigned);
+      setStatus("open");
 
-   }
+    } else if(val === "closed"){
+
+      if(userSelected === "") {
+        setSortedIssues(sortedIssues => issues.filter(issue => issue.open === false));
+      } else if(userSelected !== ""){
+        setSortedIssues(sortedIssues => issues.filter(
+          issue => issue.assigned === userSelected && issue.open === false
+        ))
+      }
+      
+      setStatus("closed");
+    } else if(val === "show all"){
+
+      if(userSelected === "") { 
+        setSortedIssues(sortedIssues => [...issues]);
+       } else if(userSelected !== ""){
+        setSortedIssues(sortedIssues => issues.filter(
+          issue => issue.assigned === userSelected
+        ))
+      }
+      
+      setStatus("show all");
+    }
+    
+  }
 
   return (
     <div className="container">
@@ -157,7 +218,9 @@ function App() {
         <Sort 
           issues={issues}
           userSelected={userSelected}
-          showOnlyByName={handleShowOnlyByName}/>
+          status={status}
+          showOnlyByName={handleShowOnlyByName}
+          showByCompletedStaus={handleShowByStatus}/>
         <IssuesList 
           issues={sortedIssues}  
           onHandleDeleteIssues={handleDeleteIssues}
