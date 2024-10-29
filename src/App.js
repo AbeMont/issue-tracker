@@ -147,12 +147,31 @@ function App() {
 
     if(assigned === 'all'){
       setSortedIssues([...issues]);
-      setUserSelected("");
-      return;
-    }
 
-    setSortedIssues(sortedIssues => [...issues].filter(issue => issue.assigned === assigned));
-    setUserSelected(assigned);
+      if(status === "open"){
+        setSortedIssues(sortedIssues => issues.filter(issue => issue.open));
+      } else if(status === "closed"){
+        setSortedIssues(sortedIssues => issues.filter(issue => issue.open === false));
+      }
+      setUserSelected("");
+
+    } else if(assigned !== 'all'){
+      if(status === "open"){
+        setSortedIssues(sortedIssues => issues.filter(
+          issue => issue.assigned === assigned && issue.open
+        ))
+      } else if(status === "closed"){
+        setSortedIssues(sortedIssues => issues.filter(
+          issue => issue.assigned === assigned && issue.open === false
+        ))
+      } else {
+        setSortedIssues(sortedIssues => [...issues].filter(issue => issue.assigned === assigned));
+      }
+      setUserSelected(assigned);
+    } else {
+      setSortedIssues(sortedIssues => [...issues].filter(issue => issue.assigned === assigned));
+      setUserSelected(assigned);
+    }
 
   }
 
